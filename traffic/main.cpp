@@ -103,7 +103,7 @@ static void print_data_hex(const uint8_t *data, int size)
 bool GoodPacket(Rule rule, Packet packet){
 
  if (std::regex_search(packet.data, rule.reg)) {
-       std::cout<<packet.data<<std::endl;
+       return false;
     }
 
     return true;
@@ -217,7 +217,6 @@ packet.data=dataForInf;
             if (!GoodPacket(rule,packet))
             {
                 std::cout <<"BAD"<<std::endl;
-
             }
             
             
