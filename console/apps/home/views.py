@@ -5,10 +5,40 @@ Copyright (c) 2019 - present AppSeed.us
 
 from django import template
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from django.urls import reverse
+from django.shortcuts import redirect
 
+from apps.home import models
+
+import json
+from django.views.decorators.csrf import csrf_exempt
+
+
+#@login_required(login_url="/login/")
+@csrf_exempt
+def alert_notify(request):
+    context = {'segment': 'alerts'}
+
+    if request.method == 'POST':
+        data = json.loads(request.body)
+    
+        alert_id = data.get('alert_id')
+        sig_id = data.get('sig_id')
+        source_ip = data.get('source_ip')
+        destination_ip = data.get('destination_ip')
+        source_port = data.get('source_port')
+        destination_port = data.get('destination_port')
+        description = data.get('description')
+        tags = data.get('tags')
+
+        #return redirect('alerts/')
+        return JsonResponse({"message": "Success"})
+    
+    return JsonResponse({"message": "Invalid request method"}, status=405)
+    #html_template = loader.get_template('home/alerts.html')
+    #return HttpResponse(html_template.render(context, request))
 
 
 @login_required(login_url="/login/")
@@ -21,7 +51,7 @@ def index(request):
 
 @login_required(login_url="/login/")
 def alert_view(request):
-    context = {}
+    context = {'segment': 'alerts'}
 
     html_template = loader.get_template('home/alerts.html')
     return HttpResponse(html_template.render(context, request))
