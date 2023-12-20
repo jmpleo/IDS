@@ -6,12 +6,14 @@ socket.onopen = function() {
 };
 
 
-const notification_template = `<a href="/alerts" class="list-group-item list-group-item-action">
+const notification_template = `
+<a href="/alerts" class="list-group-item list-group-item-action">
     <div class="row align-items-center">
         <div class="col ml--2">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h4 class="mb-0 text-sm"> {{source}} </h4>
+                <i class="ni ni-notification-70 text-danger"></i>
+                <span class="nav-link-text"> {{source}} </span>
             </div>
             <div class="text-right text-muted">
                 <small> {{timestamp}} </small>
@@ -23,15 +25,20 @@ const notification_template = `<a href="/alerts" class="list-group-item list-gro
 </a>
 `
 
+const notification_button = document.getElementById("notification-dropdown");
 
 socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
     document.getElementById("notifications").innerHTML =
-        document.getElementById("notifications").innerHTML
-        + notification_template
+        notification_template
             .replace("{{source}}", data.source_ip)
             .replace("{{description}}", data.description)
-            .replace("{{timestamp}}", data.timestamp);
+            .replace("{{timestamp}}", data.timestamp)
+        + document.getElementById("notifications").innerHTML;
+
+    if (notification_button.parentElement.classList.contains("show") == false) {
+        notification_button.click();
+    }
 
     console.log(data);
 };

@@ -1,7 +1,5 @@
 version: '3.8'
 services:
-  redis:
-    image: "redis:5"
   appseed-app:
     container_name: appseed_app
     restart: always
@@ -10,6 +8,14 @@ services:
     networks:
       - db_network
       - web_network
+  redis:
+    container_name: redis
+    image: "redis:5"
+    restart: always
+    networks:
+      - db_network
+    depends_on:
+      - appseed-app
   nginx:
     container_name: nginx
     restart: always
