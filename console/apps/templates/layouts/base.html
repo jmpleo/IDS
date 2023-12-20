@@ -59,7 +59,26 @@
   {% block javascripts %}{% endblock javascripts %}
 
   <script src="/static/assets/js/argon.js?v=1.2.0"></script>
+  <script>
+const socket = new WebSocket('ws://localhost:8000/alerts/1');
 
+socket.onopen = function() {
+  console.log('Соединение установлено.');
+};
+
+socket.onmessage = function(event) {
+  const data = event.data;
+    console.log(data);
+};
+
+socket.onclose = function(event) {
+  console.log('Соединение закрыто.');
+};
+
+socket.onerror = function(error) {
+  console.error('Произошла ошибка:', error);
+};
+  </script>
 </body>
 
 </html>

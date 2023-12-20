@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 from django.db import models
 from django.contrib.auth.models import User
-
+from channels.generic.websocket import AsyncWebsocketConsumer
 
 
 class Alert(models.Model):
@@ -20,5 +20,3 @@ class Alert(models.Model):
 
     def __str__(self):
         return self.alert_id
-
-

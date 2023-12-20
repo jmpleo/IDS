@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'apps.home'  # Enable the inner home (home)
 ]
 
@@ -65,6 +66,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+ASGI_APPLICATION = 'core.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -74,6 +76,18 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'db.sqlite3',
     }
+}
+
+REDIS_HOSTNAME = os.environ.get("REDIS_HOSTNAME")
+REDIS_PORT = os.environ.get("REDIS_PORT")
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts":[(REDIS_HOSTNAME, REDIS_PORT)],
+        },
+    },
 }
 
 # Password validation

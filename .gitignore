@@ -152,3 +152,7 @@ console/package-lock.json
 console/apps/static/assets/node_modules
 console/apps/static/assets/yarn.lock
 console/apps/static/assets/.temp
+console/.jedi
+
+.vim
+

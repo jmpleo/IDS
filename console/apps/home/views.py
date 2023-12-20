@@ -15,6 +15,9 @@ from apps.home import models
 import json
 from django.views.decorators.csrf import csrf_exempt
 
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
 
 #@login_required(login_url="/login/")
 @csrf_exempt
@@ -23,9 +26,9 @@ def alert_notify(request):
 
     if request.method == 'POST':
         data = json.loads(request.body)
-    
+
         alert_id = data.get('alert_id')
-        sig_id = data.get('sig_id')
+        sig_idsignature_id = data.get('signature_id')
         source_ip = data.get('source_ip')
         destination_ip = data.get('destination_ip')
         source_port = data.get('source_port')
@@ -33,15 +36,23 @@ def alert_notify(request):
         description = data.get('description')
         tags = data.get('tags')
 
+
+        channel_layer = get_channel_layer()
+        user_group_name = f"user_{alert_id}_group"
+        async_to_sync(channel_layer.group_send)(
+            user_group_name, {"type": "send_user", "data": data}
+        )
+
+
         #return redirect('alerts/')
         return JsonResponse({"message": "Success"})
-    
+
     return JsonResponse({"message": "Invalid request method"}, status=405)
     #html_template = loader.get_template('home/alerts.html')
     #return HttpResponse(html_template.render(context, request))
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="/login")
 def index(request):
     context = {'segment': 'index'}
 
@@ -49,7 +60,15 @@ def index(request):
     return HttpResponse(html_template.render(context, request))
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="/login")
+def profile_view(request):
+    context = {'segment': 'profile'}
+
+    html_template = loader.get_template('home/profile.html')
+    return HttpResponse(html_template.render(context, request))
+
+
+@login_required(login_url="/login")
 def alert_view(request):
     context = {'segment': 'alerts'}
 
@@ -57,7 +76,7 @@ def alert_view(request):
     return HttpResponse(html_template.render(context, request))
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="/login")
 def pages(request):
     context = {}
     # All resource paths end in .html.

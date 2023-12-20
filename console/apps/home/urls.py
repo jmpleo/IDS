@@ -6,15 +6,17 @@ Copyright (c) 2019 - present AppSeed.us
 from django.urls import path, re_path
 from apps.home import views
 from apps.home import models
+from apps.home import consumers
 
 urlpatterns = [
-
-    # The home page
     path('', views.index, name='home'),
-    path("alerts/", views.alert_view, name="alerts"),
-    path("alerts/notify/", views.alert_notify, name="alert_notify"),
+    path("profile", views.profile_view, name="profile"),
+    path("alerts", views.alert_view, name="alerts"),
+    path("alerts/notify", views.alert_notify, name="alert_notify"),
 
-    # Matches any html file
-    re_path(r'^.*\.*', views.pages, name='pages'),
+    re_path(r'^.*\.*', views.pages, name='pages')
+]
 
+websocket_urlpatterns = [
+    path("alerts/<int:user_id>", consumers.Consumer.as_asgi()),
 ]
