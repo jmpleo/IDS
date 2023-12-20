@@ -99,7 +99,7 @@ int getProtocolTypeAsNum(pcpp::ProtocolType protocolType)
         return 0;
     }
 }
-
+/*
 std::string getProtocolTypeAsString(pcpp::ProtocolType protocolType)
 {
     switch (protocolType)
@@ -192,6 +192,93 @@ std::string getProtocolTypeAsString(pcpp::ProtocolType protocolType)
     case pcpp::SomeIP:
         return "SomeIP";
     case pcpp::WakeOnLan:
+        return "WakeOnLan";
+    default:
+        return "Unknown";
+    }
+}*/
+
+std::string getProtocolTypeAsString(int protocolType)
+{
+    switch (protocolType)
+    {
+    case 1:
+        return "Ethernet";
+    case 2:
+        return "IPv4";
+    case 3:
+        return "IPv6";
+    case 4:
+        return "UDP";
+    case 5:
+        return "TCP";
+    case 6:
+        return "HTTP";
+    case 7:
+        return "ARP";
+    case 8:
+        return "VLAN";
+    case 9:
+        return "ICMP";
+    case 10:
+        return "PPPoE";
+    case 11:
+        return "DNS";
+    case 12:
+        return "MPLS";
+    case 13:
+        return "GRE";
+    case 14:
+        return "PPP_PPTP";
+    case 15:
+        return "SLL";
+    case 16:
+        return "SSL";
+    case 17:
+        return "DHCP";
+    case 18:
+        return "NULL_LOOPBACK";
+    case 19:
+        return "IGMP";
+    case 20:
+        return "GenericPayload";
+    case 21:
+        return "VXLAN";
+    case 22:
+        return "SIP";
+    case 23:
+        return "SDP";
+    case 24:
+        return "PacketTrailer";
+    case 25:
+        return "Radius";
+    case 26:
+        return "GTP";
+    case 27:
+        return "EthernetDot3";
+    case 28:
+        return "BGP";
+    case 29:
+        return "SSH";
+    case 30:
+        return "IPSec";
+    case 31:
+        return "DHCPv6";
+    case 32:
+        return "NTP";
+    case 33:
+        return "Telnet";
+    case 34:
+        return "FTP";
+    case 35:
+        return "ICMPv6";
+    case 36:
+        return "LLC";
+    case 37:
+        return "STP";
+    case 38:
+        return "SomeIP";
+    case 39:
         return "WakeOnLan";
     default:
         return "Unknown";

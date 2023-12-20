@@ -68,7 +68,7 @@ struct iphdr
   uint32_t daddr;
 } __attribute__((packed));
 
-struct tcphdr
+/*struct tcphdr
 {
   uint16_t source;
   uint16_t dest;
@@ -109,7 +109,7 @@ struct tcphdr
   uint16_t window;
   uint16_t check;
   uint16_t urg_ptr;
-} __attribute__((packed));
+} __attribute__((packed));*/
 
 struct udphdr
 {
