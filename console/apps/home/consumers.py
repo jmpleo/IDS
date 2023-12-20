@@ -14,10 +14,9 @@ class Consumer(WebsocketConsumer):
         # join the created group
         # accept the connection
 
-        self.user_id = self.scope["url_route"]["kwargs"]["user_id"]
-        print(self.user_id)
-        self.user_group_name = "user_%s_group" % self.user_id
-        print(self.user_group_name)
+        # self.user_id = self.scope["url_route"]["kwargs"]["user_id"]
+        # self.user_group_name = "user_%s_group" % self.user_id
+        self.user_group_name = "admin"
         async_to_sync(self.channel_layer.group_add)(
             self.user_group_name, self.channel_name
         )
@@ -35,5 +34,5 @@ class Consumer(WebsocketConsumer):
 
     def send_user(self, event):
         # send the recieved User data over the websocket
-        user = event["data"]
-        self.send(json.dumps({"user": user}))
+        data = event["data"]
+        self.send(json.dumps(data))

@@ -34,18 +34,19 @@ def alert_notify(request):
         source_port = data.get('source_port')
         destination_port = data.get('destination_port')
         description = data.get('description')
+        timestamp = data.get('timestamp')
         tags = data.get('tags')
 
 
         channel_layer = get_channel_layer()
-        user_group_name = f"user_{alert_id}_group"
+        # user_group_name = f"user_{alert_id}_group"
+        user_group_name = "admin"
         async_to_sync(channel_layer.group_send)(
             user_group_name, {"type": "send_user", "data": data}
         )
 
-
         #return redirect('alerts/')
-        return JsonResponse({"message": "Success"})
+        return JsonResponse({"message": "Success notify"})
 
     return JsonResponse({"message": "Invalid request method"}, status=405)
     #html_template = loader.get_template('home/alerts.html')

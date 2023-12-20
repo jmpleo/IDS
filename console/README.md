@@ -2,7 +2,7 @@
 
 ## API
 
-Для оповещения консоли о сработанной сигнатуре, необходимо отправить `POST` запрос. 
+Для оповещения консоли о сработанной сигнатуре, необходимо отправить `POST` запрос.
 
 ### POST
 
@@ -17,6 +17,7 @@
    	"source_port":"",
    	"destination_port":"",
    	"description":"",
+   	"timestamp":"",
    	"tags":[]
    }
    ```
@@ -34,6 +35,7 @@
        "source_port": 1234,
        "destination_port": 5678,
        "description": "Example alert",
+       "timestamp":"10.12.2023",
        "tags": ["bruteforce", "http"]
    }' http://<console>/alerts/notify/
    ```
@@ -42,9 +44,9 @@
 
    ```python
    import request
-   
+
    requests.post(
-       url='http://<console>/alerts/notify/', 
+       url='http://<console>/alerts/notify/',
        headers={
            "Content-Type" : "application/json"
        },
@@ -56,12 +58,13 @@
            "source_port": "1234",
            "destination_port": "5678",
            "description": "Example alert",
+           "timestamp":"10.12.2023",
            "tags": ["tag1", "tag2"]
        }
    )
    ```
 
-   
+
 
 ### GET
 
