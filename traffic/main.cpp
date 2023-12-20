@@ -333,6 +333,7 @@ static void handlePacket(uint8_t *user, const struct pcap_pkthdr *hdr, const uin
             }
         }
     }
+    PQfinish(connPost);
 }
 
 int main()
@@ -351,8 +352,7 @@ int main()
         return 1;
     }
 
-    // убрали трафик к коллектору
-   // filter = filter + " and not net ";
+    //filter = filter + " and not net ";
     //filter = filter + SERVER_ADRESS;
     filter = filter + " and not port ";
     filter = filter + std::to_string(SERVER_PORT);
