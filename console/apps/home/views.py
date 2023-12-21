@@ -29,14 +29,14 @@ def alert_notify(request):
         data = json.loads(request.body)
 
         new_alert = models.Alert.objects.create(
-            signature_id=data.get('signature_id'),
-            source_ip=data.get('source_ip'),
-            destination_ip=data.get('destination_ip'),
-            source_port=data.get('source_port'),
-            destination_port=data.get('destination_port'),
-            description=data.get('description'),
+            signature_id=    data.get('signature_id', 'undefined'),
+            source_ip=       data.get('source_ip', 'undefined'),
+            destination_ip=  data.get('destination_ip', 'undefined'),
+            source_port=     data.get('source_port', 'undefined'),
+            destination_port=data.get('destination_port', 'undefined'),
+            description=     data.get('description', 'undefined'),
             datetime=timezone.now(),
-            tags=data.get('tags')
+            tags=data.get('tags', [])
         )
 
         data['datetime'] = str(new_alert.datetime)

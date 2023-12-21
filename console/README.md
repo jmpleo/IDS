@@ -63,7 +63,7 @@ docker run -p 6379:6379 redis:5
 #### Postgres
 
 ```bash
-docker run -p 5432:5432 -e POSTGRES_USER=ids -e POSTGRES_PASSWORD=ids -e POSTGRES_DB=ids postgres:15 
+docker run -p 5432:5432 -e POSTGRES_USER=ids -e POSTGRES_PASSWORD=ids -e POSTGRES_DB=ids postgres:15
 ```
 
  Установите зависимости и запустите сервер консоли
@@ -79,6 +79,17 @@ pipenv run python3 manage.py runserver 0.0.0.0:85
 ## Dev API
 
 Для оповещения консоли о сработанной сигнатуре, необходимо отправить `POST` запрос.
+Если отсутствует какое-то поле, то отправлять следует остальную часть, никак не
+инициализируя отсутствующее поле. Например, если отсутствует `source_ip`, то
+отправлять:
+```json
+   {
+   	"signature_id":"12",
+   	"destination_ip":"localhost",
+   	"description":"/var/log/ ...",
+   	"tags":["bruteforce"]
+}
+```
 
 ### POST
 
@@ -116,7 +127,7 @@ pipenv run python3 manage.py runserver 0.0.0.0:85
 
    ```python
    import requests
-   
+
    requests.post(
        url='http://<console>/alerts/notify',
        headers={
@@ -138,21 +149,21 @@ pipenv run python3 manage.py runserver 0.0.0.0:85
    ```c++
    #include <iostream>
    #include <curl/curl.h>
-   
+
    int main() {
        CURL *curl;
        CURLcode res;
-   
+
        curl_global_init(CURL_GLOBAL_DEFAULT);
-   
+
        curl = curl_easy_init();
        if (curl) {
            curl_easy_setopt(curl, CURLOPT_URL, "http://<console>/alerts/notify");
-   
+
            struct curl_slist *headers = NULL;
            headers = curl_slist_append(headers, "Content-Type: application/json");
            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-   
+
            const char *data = R"({
                "signature_id": "1",
                "source_ip": "81.16.0.1",
@@ -163,18 +174,18 @@ pipenv run python3 manage.py runserver 0.0.0.0:85
                "tags": ["bruteforce", "http"]
            })";
            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
-   
+
            res = curl_easy_perform(curl);
            if (res != CURLE_OK) {
                std::cerr << "Ошибка при выполнении запроса: " << curl_easy_strerror(res) << std::endl;
            }
-   
+
            curl_easy_cleanup(curl);
            curl_slist_free_all(headers);
        }
-   
+
        curl_global_cleanup();
-   
+
        return 0;
    }
    ```
