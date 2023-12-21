@@ -10,9 +10,11 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - db_network
+    ports:
+      - "5444:5432"
   redis:
     container_name: redis
-    image: "redis:5"
+    image: "redis:5-alpine"
     restart: always
     networks:
       - db_network
