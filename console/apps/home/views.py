@@ -27,7 +27,6 @@ def alert_notify(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        alert_id = data.get('alert_id')
         sig_idsignature_id = data.get('signature_id')
         source_ip = data.get('source_ip')
         destination_ip = data.get('destination_ip')

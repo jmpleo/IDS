@@ -38,11 +38,10 @@ pipenv run python3 manage.py runserver 0.0.0.0:85
 
 ### POST
 
-1. `/alerts/notify/`
+1. `/alerts/notify`
 
    ```json
    {
-   	"alert_id":"",
    	"signature_id":"",
    	"source_ip":"",
    	"destination_ip":"",
@@ -53,14 +52,13 @@ pipenv run python3 manage.py runserver 0.0.0.0:85
    	"tags":[]
    }
    ```
-
+   
    #### CURL
-
+   
    ```bash
    curl -X POST \
    	-H "Content-Type: application/json" \
    	-d'{
-       "alert_id": "1",
        "signature_id": "1",
        "source_ip": "81.16.0.1",
        "destination_ip": "10.0.0.1",
@@ -69,21 +67,20 @@ pipenv run python3 manage.py runserver 0.0.0.0:85
        "description": "Example alert",
        "timestamp":"10.12.2023",
        "tags": ["bruteforce", "http"]
-   }' http://<console>/alerts/notify/
+   }' http://<console>/alerts/notify
    ```
-
+   
    #### Python
 
    ```python
    import requests
    
    requests.post(
-       url='http://<console>/alerts/notify/',
+       url='http://<console>/alerts/notify',
        headers={
            "Content-Type" : "application/json"
        },
        json={
-           "alert_id": "123",
            "signature_id": "456",
            "source_ip": "192.168.0.1",
            "destination_ip": "10.0.0.1",
@@ -109,14 +106,13 @@ pipenv run python3 manage.py runserver 0.0.0.0:85
    
        curl = curl_easy_init();
        if (curl) {
-           curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8000/alerts/notify");
+           curl_easy_setopt(curl, CURLOPT_URL, "http://<console>/alerts/notify");
    
            struct curl_slist *headers = NULL;
            headers = curl_slist_append(headers, "Content-Type: application/json");
            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
    
            const char *data = R"({
-               "alert_id": "1",
                "signature_id": "1",
                "source_ip": "81.16.0.1",
                "destination_ip": "10.0.0.1",
