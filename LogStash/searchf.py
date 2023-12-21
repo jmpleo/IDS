@@ -5,7 +5,7 @@ from alert import send_post
 
 def find_files_by_name(start_dir, filename):
     found_files = []
-    for root, dirs, files in os.walk(start_dir, onerror=lambda e: None):
+    for root, files in os.walk(start_dir, onerror=lambda e: None):
         for file in files:
             try:
                 if file == filename:
@@ -26,7 +26,8 @@ def search_files():
             result = find_files_by_name(dirs, signature[1])
             if result:
                 for file_path in result:
-                    send_post(signature[0],"local", "local", "local", f"Найденн файл с именем '{signature[1]}': {signature[2]}, по пути: {file_path}", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                    tags = signature[3].split(",")
+                    send_post(signature[0], description=f"Найденн файл с именем '{signature[1]}': {signature[2]}, по пути: {file_path}",tags=tags)
                     print(f"Найденн файл с именем '{signature[1]}': {signature[2]}, по пути: {file_path}")
 
 

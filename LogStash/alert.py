@@ -1,10 +1,9 @@
 import requests
 import socket
 
-def send_post(sig_id="", src_ip="?", src_port="?", dst_port="?", description="", timestamp="", tags=[]):
+def send_post(sig_id="", src_ip="", src_port="", dst_port="", description="", tags=[]):
     hostname = socket.gethostname()
     dst_ip = socket.gethostbyname(hostname)
-    print(1)
     
     # requests.post(
     #     url='http://127.0.0.1/alerts/notify/',

@@ -39,7 +39,7 @@ def check_count_log(filename, data):
             if filename in jsond:
                 last_count_log = jsond.get(filename,'')[1]
                 if last_count_log > now_count_log:
-                    send_post("-", "local", "local", "local", "Уменьшилось количество логов", datetime.now().strftime('%Y-%m-%d %H:%M:%S'), ["local", "logs"])
+                    send_post(description="Уменьшилось количество логов", tags=["local", "logs"])
                     print("Уменьшилось количество логов")
     except FileNotFoundError:
         return
@@ -84,7 +84,7 @@ def check_by_signatures(data):
             if match:
                 formatted_date = form_data(log['numeric_date_stamp'])
                 tags = signature[3].split(",")
-                send_post(signature[0],log['source_host'],"?","80",signature[2],formatted_date, tags)
+                send_post(signature[0],log['source_host'],"","80",f"signature[2] : {formatted_date}", tags)
                 print(f"Сработала сигнатура: {signature[2]}, ip атакующего {log['source_host']}, время: {log['date_stamp']}")
 
 def check_directory_fuzz(data):
@@ -97,15 +97,15 @@ def check_directory_fuzz(data):
         for signature in signatures:
             regexpatern = signature[1]
             match = re.search(regexpatern, log['raw_text'])
-            if match:
+            if match:   
                 signatures.remove(signature)
                 formatted_date = form_data(log['numeric_date_stamp'])
                 tags = signature[3].split(",")
-                send_post(signature[0],log['source_host'],"?","80",signature[2],formatted_date, tags)
+                send_post(signature[0],log['source_host'],"","80",f"signature[2] : {formatted_date}", tags)
                 print(f"Сработала сигнатура: {signature[2]}, ip атакующего {log['source_host']}, время: {log['date_stamp']}")       
 
 def main():
-    data = access_check("/var/log/nginx/access.log", False)
+    data = access_check("/var/log/nginx/access.log", True)
     check_by_signatures(data)
     check_directory_fuzz(data)
 

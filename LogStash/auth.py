@@ -38,7 +38,7 @@ def check_count_log(filename, data):
             if filename in jsond:
                 last_count_log = jsond.get(filename,'')[1]
                 if last_count_log > now_count_log:
-                    send_post("-", "local", "local", "local", "Уменьшилось количество логов", datetime.now().strftime('%Y-%m-%d %H:%M:%S'), ["local", "logs"])
+                    send_post(description="Уменьшилось количество логов", tags=["local", "logs"])
                     print("Уменьшилось количество логов")
     except FileNotFoundError:
         return
@@ -90,7 +90,7 @@ def check_ssh_brute_force(data):
     #Проверяем количество строк удовлетворяющих критерию атаки
     for ip in bad_src:
         if bad_src[ip][0] >= 5:
-            send_post("-", ip, "?", "22", "Попытка перебора пароля по ssh", bad_src[ip][1], ["Brute-force", "logs"])
+            send_post("501", ip, "", "22", f"Попытка перебора пароля по ssh начало атаки {bad_src[ip][1],}", ["Brute-force", "logs"])
             print(f"Попытка перебора пароля c ip: {ip} атака начата {bad_src[ip][1]}")
 
 #Проверка перебора полльзователя
@@ -111,7 +111,7 @@ def check_ssh_user_brute(data):
     #Проверяем количество строк удовлетворяющих критерию атаки
     for ip in bad_src:
         if bad_src[ip][0] >= 5:
-            send_post("-", ip, "?", "22", "Попытка перебора пользователя по ssh", bad_src[ip][1], ["Brute-force", "logs"])
+            send_post("502", ip, "", "22", f"Попытка перебора пользователя по ssh начало атаки : {bad_src[ip][1]}", ["Brute-force", "logs"])
             print(f"Попытка перебора пользователя c ip: {ip} атака начата {bad_src[ip][1]}")
 
 #Много неудачных попыток su
@@ -137,7 +137,7 @@ def many_su_errors(data):
     for constr_ruser_user in bad_logs:
         if bad_logs[constr_ruser_user][0] >= 3:
             ruser,user = constr_ruser_user.split(':')
-            send_post("-", "local", "local", "local", f"Много попыток выполнить su к пользователю {user}, пользователем {ruser}", bad_logs[constr_ruser_user][1], ["Brute-force", "logs"])
+            send_post("503", description=f"Много попыток выполнить su к пользователю {user}, пользователем {ruser} атака начата {bad_logs[constr_ruser_user][1]}",tags=["Brute-force", "logs"])
             print(f"Много попыток выполнить su к пользователю {user}, пользователем {ruser}, атака начата {bad_logs[constr_ruser_user][1]}: Возможен перебор пароля")
 
 
@@ -147,13 +147,13 @@ def sudoers_error(data):
         if "user NOT in sudoers" in log['raw_text']:
             username = re.findall(r"([^\s]+) : user NOT in sudoers", log['message'])[0]
             formatted_date = form_data(log['numeric_date_stamp'])
-            send_post("-", "local", "local", "local", f"Попытка вызвать sudo от пользователя не являющегося членом группы sudoers, имя пользователя: {username}", formatted_date, ["logs", "PrivEsc"])
+            send_post("504", description=f"Попытка вызвать sudo от пользователя не являющегося членом группы sudoers, имя пользователя: {username}, время: {log['date_stamp']}", tags=["logs", "PrivEsc"])
             print(f"Попытка вызвать sudo от пользователя не являющегося членом группы sudoers, имя пользователя: {username}, время: {log['date_stamp']}")
 
 
 
 def main():
-    data = syslog_check('/var/log/auth.log', False)
+    data = syslog_check('/var/log/auth.log', True)
     check_ssh_brute_force(data)
     check_ssh_user_brute(data)
     many_su_errors(data)
