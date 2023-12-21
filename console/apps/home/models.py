@@ -17,7 +17,7 @@ class Alert(models.Model):
     source_port = models.IntegerField()
     destination_port = models.IntegerField()
     description = models.TextField()
-    timestamp = models.TimeField(default=timezone.now)
+    datetime = models.DateTimeField(default=timezone.now)
     tags = ArrayField(
         models.CharField(
             max_length=50,
@@ -32,3 +32,5 @@ class Alert(models.Model):
 
     def __str__(self):
         return self.alert_id
+
+

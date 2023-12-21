@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from django.urls import reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
 from apps.home import models
 
@@ -33,7 +33,7 @@ def alert_notify(request):
         source_port = data.get('source_port')
         destination_port = data.get('destination_port')
         description = data.get('description')
-        timestamp = data.get('timestamp')
+        datetime = data.get('timestamp')
         tags = data.get('tags')
 
         new_alert = models.Alert.objects.create(
@@ -43,7 +43,7 @@ def alert_notify(request):
             source_port=source_port,
             destination_port=destination_port,
             description=description,
-            timestamp=timestamp,
+            datetime=datetime,
             tags=tags
         )
 
@@ -84,8 +84,8 @@ def profile_view(request):
 def alert_view(request):
     context = {'segment': 'alerts'}
 
-    html_template = loader.get_template('home/alerts.html')
-    return HttpResponse(html_template.render(context, request))
+    notifications = models.Alert.objects.all()
+    return render(request, "home/alerts.html", {"notifications": notifications})
 
 
 @login_required(login_url="/login")
