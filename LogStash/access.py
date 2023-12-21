@@ -4,7 +4,13 @@ import json
 import re
 from datetime import datetime
 from collections import defaultdict
+from alert import send_post
 from BDReq import BDRequests
+
+def form_data(date_stamp):
+    input_datetime = datetime.strptime(date_stamp, '%Y%m%d%H%M%S')
+    formatted_date = input_datetime.strftime('%Y-%m-%d %H:%M:%S')
+    return formatted_date
 
 #Функция фильтрации уже провереных логов
 def filter_log(filename, data):
@@ -33,6 +39,7 @@ def check_count_log(filename, data):
             if filename in jsond:
                 last_count_log = jsond.get(filename,'')[1]
                 if last_count_log > now_count_log:
+                    send_post("-", "local", "local", "local", "Уменьшилось количество логов", datetime.now().strftime('%Y-%m-%d %H:%M:%S'), ["local", "logs"])
                     print("Уменьшилось количество логов")
     except FileNotFoundError:
         return
@@ -47,7 +54,6 @@ def access_check(filename, filter_flag = True):
     #Проверка количества логов
     check_count_log(filename,data)
 
-    #Фильтрация
     if filter_flag:
         data = filter_log(filename,data)
     
@@ -76,13 +82,16 @@ def check_by_signatures(data):
             regexpatern = signature[1]
             match = re.search(regexpatern, log['raw_text'])
             if match:
+                formatted_date = form_data(log['numeric_date_stamp'])
+                tags = signature[3].split(",")
+                send_post(signature[0],log['source_host'],"?","80",signature[2],formatted_date, tags)
                 print(f"Сработала сигнатура: {signature[2]}, ip атакующего {log['source_host']}, время: {log['date_stamp']}")
 
 def check_directory_fuzz(data):
     #Получение списка сигнатур
     BD = BDRequests()
     signatures = BD.get_fuzzer_sig()
-    
+
     #Применение сигнатур
     for log in data['entries']:
         for signature in signatures:
@@ -90,7 +99,10 @@ def check_directory_fuzz(data):
             match = re.search(regexpatern, log['raw_text'])
             if match:
                 signatures.remove(signature)
-                print(f"Сработала сигнатура: {signature[2]}, ip атакующего {log['source_host']}, время: {log['date_stamp']}")      
+                formatted_date = form_data(log['numeric_date_stamp'])
+                tags = signature[3].split(",")
+                send_post(signature[0],log['source_host'],"?","80",signature[2],formatted_date, tags)
+                print(f"Сработала сигнатура: {signature[2]}, ip атакующего {log['source_host']}, время: {log['date_stamp']}")       
 
 def main():
     data = access_check("/var/log/nginx/access.log", False)

@@ -1,9 +1,15 @@
 import logdissect 
-from datetime import datetime
 import re
-from collections import defaultdict
 import json
 import os
+from collections import defaultdict
+from datetime import datetime
+from alert import send_post
+
+def form_data(date_stamp):
+    input_datetime = datetime.strptime(date_stamp, '%Y%m%d%H%M%S')
+    formatted_date = input_datetime.strftime('%Y-%m-%d %H:%M:%S')
+    return formatted_date
 
 #Функция фильтрации уже провереных логов
 def filter_log(filename, data):
@@ -32,6 +38,7 @@ def check_count_log(filename, data):
             if filename in jsond:
                 last_count_log = jsond.get(filename,'')[1]
                 if last_count_log > now_count_log:
+                    send_post("-", "local", "local", "local", "Уменьшилось количество логов", datetime.now().strftime('%Y-%m-%d %H:%M:%S'), ["local", "logs"])
                     print("Уменьшилось количество логов")
     except FileNotFoundError:
         return
@@ -77,11 +84,13 @@ def check_ssh_brute_force(data):
             if ip_src in bad_src:
                 bad_src[ip_src][0] += 1  
             else:
-                bad_src[ip_src] = [1,log['date_stamp']] 
+                formatted_date = form_data(log['numeric_date_stamp'])
+                bad_src[ip_src] = [1, formatted_date] 
 
     #Проверяем количество строк удовлетворяющих критерию атаки
     for ip in bad_src:
         if bad_src[ip][0] >= 5:
+            send_post("-", ip, "?", "22", "Попытка перебора пароля по ssh", bad_src[ip][1], ["Brute-force", "logs"])
             print(f"Попытка перебора пароля c ip: {ip} атака начата {bad_src[ip][1]}")
 
 #Проверка перебора полльзователя
@@ -96,11 +105,13 @@ def check_ssh_user_brute(data):
             if ip_src in bad_src:
                 bad_src[ip_src][0] += 1  
             else:
-                bad_src[ip_src] = [1,log['date_stamp']] 
+                formatted_date = form_data(log['numeric_date_stamp'])
+                bad_src[ip_src] = [1, formatted_date] 
 
     #Проверяем количество строк удовлетворяющих критерию атаки
     for ip in bad_src:
         if bad_src[ip][0] >= 5:
+            send_post("-", ip, "?", "22", "Попытка перебора пользователя по ssh", bad_src[ip][1], ["Brute-force", "logs"])
             print(f"Попытка перебора пользователя c ip: {ip} атака начата {bad_src[ip][1]}")
 
 #Много неудачных попыток su
@@ -119,12 +130,14 @@ def many_su_errors(data):
                 if constr_ruser_user in bad_logs:
                     bad_logs[constr_ruser_user][0] += 1 
                 else:
-                    bad_logs[constr_ruser_user] = [1, log['date_stamp']]    
+                    formatted_date = form_data(log['numeric_date_stamp'])
+                    bad_logs[constr_ruser_user] = [1, formatted_date]
 
     #Проверяем количество строк удовлетворяющих критерию атаки
     for constr_ruser_user in bad_logs:
         if bad_logs[constr_ruser_user][0] >= 3:
             ruser,user = constr_ruser_user.split(':')
+            send_post("-", "local", "local", "local", f"Много попыток выполнить su к пользователю {user}, пользователем {ruser}", bad_logs[constr_ruser_user][1], ["Brute-force", "logs"])
             print(f"Много попыток выполнить su к пользователю {user}, пользователем {ruser}, атака начата {bad_logs[constr_ruser_user][1]}: Возможен перебор пароля")
 
 
@@ -133,6 +146,8 @@ def sudoers_error(data):
     for log in data['entries']:
         if "user NOT in sudoers" in log['raw_text']:
             username = re.findall(r"([^\s]+) : user NOT in sudoers", log['message'])[0]
+            formatted_date = form_data(log['numeric_date_stamp'])
+            send_post("-", "local", "local", "local", f"Попытка вызвать sudo от пользователя не являющегося членом группы sudoers, имя пользователя: {username}", formatted_date, ["logs", "PrivEsc"])
             print(f"Попытка вызвать sudo от пользователя не являющегося членом группы sudoers, имя пользователя: {username}, время: {log['date_stamp']}")
 
 
