@@ -21,3 +21,10 @@ class BDRequests():
         signatures = cur.fetchall() 
         cur.close()
         return signatures
+    
+    def get_file_sig(self):
+        cur = self.conn.cursor()
+        cur.execute("SELECT * FROM files_signature;", )
+        signatures = cur.fetchall() 
+        cur.close()
+        return signatures

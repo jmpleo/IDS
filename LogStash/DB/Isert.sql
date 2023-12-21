@@ -60,14 +60,14 @@ INSERT INTO public.files_signature(
     ('malware.dll', 'Библиотека вредоносной программы', 'Malware,files'),
     ('spyware.txt', 'Текстовый файл, содержащий шпионскую информацию', 'Spyware,files'),
     ('adware.js', 'JavaScript-файл, показывающий рекламу', 'Adware,files'),
-    ('phishing.exe', 'Исполняемый файл для перехвата личных данных', 'Phishing');
+    ('phishing.exe', 'Исполняемый файл для перехвата личных данных', 'Phishing'),
 	('revshell.c', 'Исходный код для создания обратного shell на языке C', 'Reverse Shell,files'),
     ('revshell.py', 'Скрипт на Python для установки обратного shell', 'Reverse Shell,files'),
     ('revshell.php', 'PHP-скрипт, реализующий обратный shell', 'Reverse Shell,files'),
     ('revshell.js', 'JavaScript-файл для создания обратного shell', 'Reverse Shell,files'),
     ('revshell.sh', 'Shell-скрипт, создающий обратное соединение', 'Reverse Shell,files'),
 	('poc_exploit.py', 'Python-скрипт с POC эксплойтом', 'POC,files'),
-    ('poc_vuln.html', 'HTML-файл, иллюстрирующий уязвимость', 'POC')
+    ('poc_vuln.html', 'HTML-файл, иллюстрирующий уязвимость', 'POC'),
     ('poc_exploit.c', 'Исходный код на C с демонстрацией эксплойта', 'POC,files'),
     ('poc_script.js', 'JavaScript-скрипт, демонстрирующий уязвимость', 'POC,files'),
     ('poc_payload.php', 'PHP-скрипт с примером payload для уязвимости', 'POC,files'),
