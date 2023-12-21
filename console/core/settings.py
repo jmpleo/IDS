@@ -78,8 +78,8 @@ DATABASES = {
     }
 }
 
-REDIS_HOSTNAME = os.environ.get("REDIS_HOSTNAME")
-REDIS_PORT = os.environ.get("REDIS_PORT")
+REDIS_HOSTNAME = config('REDIS_HOSTNAME', default="localhost", cast=str)
+REDIS_PORT = config('REDIS_PORT', default="6379", cast=int)
 
 CHANNEL_LAYERS = {
     'default': {
