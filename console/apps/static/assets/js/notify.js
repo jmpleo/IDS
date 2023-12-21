@@ -14,11 +14,11 @@ const notification_template = `
         <div>
           <h4 class="text">
             <i class="ni ni-notification-70 text-danger"></i>
-            <span class="text-lg bg-{{color}}">
+            <span class="text-lg bg-{{color}} rounded p-1">
             {{source}}
             </span>
             <i class="ni ni-bold-right text-dark"></i>
-            <span class="text-lg bg-secondary">
+            <span class="text-lg bg-secondary rounded p-1">
             {{destination}}
             </span>
           </h4>
