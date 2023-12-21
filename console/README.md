@@ -70,7 +70,7 @@ pipenv run python3 manage.py runserver 0.0.0.0:85
        "source_port": 1234,
        "destination_port": 5678,
        "description": "Example alert",
-       "timestamp":"10.12.2023",
+       "timestamp":"10:12:10.101010",
        "tags": ["bruteforce", "http"]
    }' http://<console>/alerts/notify
    ```
@@ -92,7 +92,7 @@ pipenv run python3 manage.py runserver 0.0.0.0:85
            "source_port": "1234",
            "destination_port": "5678",
            "description": "Example alert",
-           "timestamp":"10.12.2023",
+           "timestamp":"10:12:10.101010",
            "tags": ["tag1", "tag2"]
        }
    )
@@ -124,7 +124,7 @@ pipenv run python3 manage.py runserver 0.0.0.0:85
                "source_port": 1234,
                "destination_port": 5678,
                "description": "Example alert",
-               "timestamp": "10.12.2023",
+               "timestamp": "10:12:10.101010",
                "tags": ["bruteforce", "http"]
            })";
            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
