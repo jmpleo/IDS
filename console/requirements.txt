@@ -20,6 +20,7 @@ incremental==22.10.0
 jedi==0.19.1
 msgpack==1.0.7 ; python_version >= '3.8'
 parso==0.8.3 ; python_version >= '3.6'
+psycopg2-binary==2.9.9
 pyasn1==0.5.1
 pyasn1-modules==0.3.0
 pycodestyle==2.7.0
