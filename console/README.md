@@ -1,6 +1,38 @@
 
 
-## API
+## Quick start
+
+Измените файл `.env` касательно ваших настроек
+
+```
+REDIS_HOSTNAME=redis
+REDIS_PORT=6379
+DEBUG=True
+SECRET_KEY=S3cr3t_K#Key
+SERVER=localhost
+```
+
+### Docker
+
+Соберите сервисы и запустите используя `docker-compose`:
+
+```bash
+docker-compose up
+```
+
+### Host
+
+ Установите зависимости и запустите сервер консоли
+
+```bash
+pipenv --python 3.9
+pipenv install -r requirements.txt
+pipenv run python3 manage.py runserver 0.0.0.0:85
+```
+
+
+
+## Dev API
 
 Для оповещения консоли о сработанной сигнатуре, необходимо отправить `POST` запрос.
 
