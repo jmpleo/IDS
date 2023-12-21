@@ -71,12 +71,23 @@ ASGI_APPLICATION = 'core.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+DATABASE_HOSTNAME = config('DATABASE_HOSTNAME', default="localhost", cast=str)
+DATABASE_PORT = config('DATABASE_PORT', default="5432", cast=str)
+DATABASE_NAME = config('DATABASE_NAME', default="ids", cast=str)
+DATABASE_USER = config('DATABASE_USER', default="debug", cast=str)
+DATABASE_PASSWORD = config('DATABASE_PASSWORD', default="debug", cast=str)
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': DATABASE_NAME,
+        'USER': DATABASE_USER,
+        'PASSWORD': DATABASE_PASSWORD,
+        'HOST': DATABASE_HOSTNAME,
+        'PORT': DATABASE_PORT,
     }
 }
+
 
 REDIS_HOSTNAME = config('REDIS_HOSTNAME', default="localhost", cast=str)
 REDIS_PORT = config('REDIS_PORT', default="6379", cast=int)

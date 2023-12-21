@@ -39,6 +39,7 @@ zope-interface = "==6.1"
 jedi = "*"
 twisted = {version = "==23.10.0", extras = ["tls"]}
 channels-redis = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
