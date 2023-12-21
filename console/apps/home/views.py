@@ -12,6 +12,7 @@ from django.shortcuts import redirect, render
 from django.utils import timezone
 
 from apps.home import models
+from apps.home.forms import SignatureForm
 
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -71,9 +72,28 @@ def index(request):
 @login_required(login_url="/login")
 def profile_view(request):
     context = {'segment': 'profile'}
+    msg = None
 
-    html_template = loader.get_template('home/profile.html')
-    return HttpResponse(html_template.render(context, request))
+    if request.method == "POST":
+        form = SignatureForm(request.POST)
+        print(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+        else:
+            msg = "Ошибка вводимых данных"
+            form.save()
+            pass
+    else:
+        form = SignatureForm()
+
+
+    print(msg)
+    return render(request, "home/profile.html", {"form": form, "tags": dict(models.TAGS).keys()})
+
+
+
 
 
 @login_required(login_url="/login")
@@ -82,7 +102,7 @@ def alert_view(request):
 
     data = models.Alert.objects.all()
 
-    return render(request, "home/alerts.html", {"notifications": data})
+    return render(request, "home/alerts.html", {"notifications": data[::-1]})
 
 
 @login_required(login_url="/login")

@@ -10,6 +10,33 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from django.utils import timezone
 
 
+TAGS = (
+    ("http", "HTTP"),
+    ("bruteforce", "Brute Force"),
+    ("ssh", "SSH")
+)
+
+TAGS
+
+class Signature(models.Model):
+    source_ip = models.TextField()
+    destination_ip = models.TextField()
+    source_port = models.TextField()
+    destination_port = models.TextField()
+    regex = models.TextField()
+    regex_hex = models.TextField()
+    protocol = models.TextField()
+    tags = ArrayField(
+        models.CharField(
+            max_length=50,
+            choices=TAGS
+            )
+        )
+
+    def __str__(self):
+        return self.regex
+
+
 class Alert(models.Model):
     signature_id = models.IntegerField()
     source_ip = models.CharField(max_length=15)
@@ -21,16 +48,9 @@ class Alert(models.Model):
     tags = ArrayField(
         models.CharField(
             max_length=50,
-            choices=(
-                ("http", "HTTP"),
-                ("bruteforce", "Brute Force"),
-                ("sqlinjection", "SQL Injection"),
-                ("ssh", "SSH")
-                )
+            choices=TAGS
             )
         )
 
     def __str__(self):
-        return self.alert_id
-
-
+        return self.description
