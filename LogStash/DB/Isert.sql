@@ -23,7 +23,7 @@ INSERT INTO public.acces_log_signature(
 INSERT INTO public.fuzzers_signature(
 	pattern, description, tag)
 	VALUES 
-    ('.*feroxbuster.*', 'Фаззер feroxbuster', 'Fuzzer,Web,logs')
+    ('.*feroxbuster.*', 'Фаззер feroxbuster', 'Fuzzer,Web,logs'),
 	('.*w3af.*', 'Фаззер w3af', 'Fuzzer,Web,logs'),
     ('.*Fuzz Faster U Fool.*', 'Фаззер FFUF', 'Fuzzer,Web,logs'),
     ('.*Wfuzz.*', 'Фаззер WFFUF', 'Fuzzer,Web,logs'),
