@@ -75,7 +75,7 @@ pipenv run python3 manage.py runserver 0.0.0.0:85
    #### Python
 
    ```python
-   import request
+   import requests
    
    requests.post(
        url='http://<console>/alerts/notify/',
