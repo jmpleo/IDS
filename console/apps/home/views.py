@@ -9,6 +9,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from django.urls import reverse
 from django.shortcuts import redirect, render
+from django.utils import timezone
 
 from apps.home import models
 
@@ -27,25 +28,20 @@ def alert_notify(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        signature_id = data.get('signature_id')
-        source_ip = data.get('source_ip')
-        destination_ip = data.get('destination_ip')
-        source_port = data.get('source_port')
-        destination_port = data.get('destination_port')
-        description = data.get('description')
-        datetime = data.get('timestamp')
-        tags = data.get('tags')
-
         new_alert = models.Alert.objects.create(
-            signature_id=signature_id,
-            source_ip=source_ip,
-            destination_ip=destination_ip,
-            source_port=source_port,
-            destination_port=destination_port,
-            description=description,
-            datetime=datetime,
-            tags=tags
+            signature_id=data.get('signature_id'),
+            source_ip=data.get('source_ip'),
+            destination_ip=data.get('destination_ip'),
+            source_port=data.get('source_port'),
+            destination_port=data.get('destination_port'),
+            description=data.get('description'),
+            datetime=timezone.now(),
+            tags=data.get('tags')
         )
+
+        data['datetime'] = str(new_alert.datetime)
+        data['source'] = "{}:{}".format(data['source_ip'], data['source_port'])
+        data['destination'] = "{}:{}".format(data['destination_ip'], data['destination_port'])
 
         new_alert.save_base()
 
@@ -84,8 +80,9 @@ def profile_view(request):
 def alert_view(request):
     context = {'segment': 'alerts'}
 
-    notifications = models.Alert.objects.all()
-    return render(request, "home/alerts.html", {"notifications": notifications})
+    data = models.Alert.objects.all()
+
+    return render(request, "home/alerts.html", {"notifications": data})
 
 
 @login_required(login_url="/login")

@@ -5,10 +5,16 @@
         <div>
           <h4 class="text">
             <i class="ni ni-notification-70 text-danger"></i>
-            {{ notification.source_ip }}
+            <span class="text-lg bg-secondary">
+                {{ notification.source_ip }}:{{ notification.source_port }}
+            </span>
+            <i class="ni ni-bold-right text-dark"></i>
+            <span class="text-lg bg-secondary">
+                {{ notification.destination_ip }}:{{ notification.destination_port }}
+            </span>
           </h4>
         </div>
-        <small> {{ notification.timestamp}} </small>
+        <small> {{ notification.datetime }} </small>
       </div>
       <p class="text-sm mb-0"> {{ notification.description }} </p>
     </div>

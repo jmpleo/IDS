@@ -14,35 +14,40 @@ const notification_template = `
         <div>
           <h4 class="text">
             <i class="ni ni-notification-70 text-danger"></i>
+            <span class="text-lg bg-{{color}}">
             {{source}}
+            </span>
+            <i class="ni ni-bold-right text-dark"></i>
+            <span class="text-lg bg-secondary">
+            {{destination}}
+            </span>
           </h4>
+            <small class="text-sm text-dark"> {{datetime}} </small>
         </div>
-        <small> {{timestamp}} </small>
       </div>
-      <p class="text-sm mb-0"> {{description}} </p>
+      <!--p class="text-sm mb-0"> {{description}} </p-->
     </div>
   </div>
 </a>
 `
 
 const notification_button = document.getElementById("notification-dropdown");
+const colors = ["yellow", "warning", "cyan", "info", "orange"]
 
 socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
-    document.getElementById("notifications").innerHTML =
-        notification_template
-            .replace("{{source}}", data.source_ip)
-            .replace("{{description}}", data.description)
-            .replace("{{timestamp}}", data.timestamp)
+    const notification_item = notification_template
+        .replace("{{source}}", data.source)
+        .replace("{{destination}}", data.destination)
+        .replace("{{description}}", data.description)
+        .replace("{{datetime}}", Date(data.datetime))
+        .replace("{{color}}", colors[Math.floor(Math.random() * colors.length)])
+
+    document.getElementById("notifications").innerHTML = notification_item
         + document.getElementById("notifications").innerHTML;
 
-    document.getElementById("notifications-list").innerHTML =
-        notification_template
-            .replace("{{source}}", data.source_ip)
-            .replace("{{description}}", data.description)
-            .replace("{{timestamp}}", data.timestamp)
+    document.getElementById("notifications-list").innerHTML = notification_item
         + document.getElementById("notifications-list").innerHTML;
-
 
     if (notification_button.parentElement.classList.contains("show") == false) {
         notification_button.click();
