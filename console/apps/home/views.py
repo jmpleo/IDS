@@ -83,17 +83,18 @@ def profile_view(request):
 
         else:
             msg = "Ошибка вводимых данных"
-            form.save()
-            pass
     else:
         form = SignatureForm()
 
-
-    print(msg)
-    return render(request, "home/profile.html", {"form": form, "tags": dict(models.TAGS).keys()})
-
-
-
+    return render(
+        request,
+        "home/profile.html",
+        {
+            "form": form,
+            "tags": dict(models.TAGS).keys(),
+            "msg" : msg
+        }
+    )
 
 
 @login_required(login_url="/login")

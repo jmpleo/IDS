@@ -34,13 +34,13 @@ class SignatureForm(forms.ModelForm):
 
     class Meta:
         model = Signature
-        fields = (
-            'source_ip',
-            'source_port',
-            'destination_ip',
-            'destination_port',
-            'regex',
-            'regex_hex',
-            'protocol',
-            'tags'
-            )
+        fields = '__all__' #(
+            #'source_ip',
+            #'source_port',
+            #'destination_ip',
+            #'destination_port',
+            #'regex',
+            #'regex_hex',
+            #'protocol',
+            #'tags'
+            #)
