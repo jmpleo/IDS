@@ -12,6 +12,8 @@
 #include "convert.h"
 #include <boost/asio/ip/address.hpp>
 #include <boost/asio/ip/network_v4.hpp>
+#include <curl/curl.h>
+
 std::string IP_serv;
 
 int count = 0;
@@ -41,7 +43,7 @@ struct Rule
 };
 
 
-std::string filter = " not port 5432";
+std::string filter = " not port 5432 and ip and not net 172.17.0.0/16";
 #define PRINT_BYTES_PER_LINE 16
 
 // функция для вывода информации о всем трафике
@@ -207,6 +209,46 @@ bool GoodPacket(Rule rule, Packet packet)
 }
 
 
+void SendAlert(int sign_id,std::string src_ip,std::string dst_ip, int src_port, int dst_port,std::string desc,std::string tags) {
+    CURL *curl;
+    CURLcode res;
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+time_t now = time(0);
+std::string dt = ctime(&now);
+
+    curl = curl_easy_init();
+    if (curl) {
+        curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:85/alerts/notify");
+
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+       std::string data="{\n\"signature_id\": \""+std::to_string(sign_id)+"\",\n";
+            data+="\"source_ip\": \""+src_ip+"\",\n";
+            data+="\"destination_ip\": \""+dst_ip+"\",\n";
+            data+="\"source_port\": "+std::to_string(src_port)+",\n";
+            data+="\"destination_port\": "+std::to_string(dst_port)+",\n";
+            data+="\"description\": \""+desc+"\",\n";
+           // data+="\"timestamp\": \""+dt+"\",\n";
+          // data+="\"timestamp\": \"10:12:10.101010 \",\n";
+            data+="\"tags\": [\""+tags+"\"]\n}";
+
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
+
+        res = curl_easy_perform(curl);
+        if (res != CURLE_OK) {
+            std::cerr << "Ошибка при выполнении запроса: " << curl_easy_strerror(res) << std::endl;
+            exit(0);
+        }
+
+        curl_easy_cleanup(curl);
+        curl_slist_free_all(headers);
+    }
+    curl_global_cleanup();
+}
+
+
 // обработка пакета
 static void handlePacket(uint8_t *user, const struct pcap_pkthdr *hdr, const uint8_t *bytes)
 {
@@ -253,14 +295,14 @@ static void handlePacket(uint8_t *user, const struct pcap_pkthdr *hdr, const uin
         data_size = hdr->len - sizeof(struct ethhdr) - ip_header_size - sizeof(struct udphdr);
     }
 
-    printf("\n%s:%d -> %s:%d, %d (0x%x) bytes\n\n",
-           source_ip, source_port, dest_ip, dest_port,
-           data_size, data_size);
+  //  printf("\n%s:%d -> %s:%d, %d (0x%x) bytes\n\n",
+       //    source_ip, source_port, dest_ip, dest_port,
+   //        data_size, data_size);
     int headers_size = 0;
     if (data_size > 0)
     {
         headers_size = hdr->len - data_size;
-        print_data_hex(bytes + headers_size, data_size);
+      //  print_data_hex(bytes + headers_size, data_size);
     }
 
     packet.dst_ip = dest_ip;
@@ -291,7 +333,8 @@ static void handlePacket(uint8_t *user, const struct pcap_pkthdr *hdr, const uin
     dataForInfHex = ss.str();
     packet.dataHex = dataForInfHex;
 
-    PGconn *connPost = PQconnectdb("user=postgres port=5432 password=postgres host=localhost dbname=SOV");
+    PGconn *connPost = PQconnectdb("user=postgres port=5432 password=postgres host=172.18.0.2 dbname=SOV");
+    
     if (PQstatus(connPost) != CONNECTION_OK)
     {
         std::cout << PQerrorMessage(connPost) << std::endl;
@@ -329,7 +372,10 @@ static void handlePacket(uint8_t *user, const struct pcap_pkthdr *hdr, const uin
 
             if (!GoodPacket(rule, packet))
             {
-                std::cout << "BAD" << std::endl;
+                std::string desc="find regex ";
+                desc+=PQgetvalue(res, i, 4);
+                SendAlert(i,packet.src_ip,packet.dst_ip,packet.src_port,packet.dst_port,desc,PQgetvalue(res, i, 7));
+              //  std::cout << "BAD" << std::endl;
             }
         }
     }
@@ -341,7 +387,7 @@ int main()
     int res;
     char errbuf[PCAP_ERRBUF_SIZE];
 
-    std::ifstream fin("/opt/soa/ip.txt");
+    std::ifstream fin("/opt/sniffer/ip.txt");
     fin >> IP_serv;
     fin.close();
 
@@ -352,8 +398,10 @@ int main()
         return 1;
     }
 
-    //filter = filter + " and not net ";
-    //filter = filter + SERVER_ADRESS;
+    filter = filter + " and not net ";
+    filter = filter + SERVER_ADRESS;
+    filter = filter + " and not net ";
+    filter = filter + IP_serv;
     filter = filter + " and not port ";
     filter = filter + std::to_string(SERVER_PORT);
 
