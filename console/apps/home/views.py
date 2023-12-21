@@ -27,7 +27,7 @@ def alert_notify(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        sig_idsignature_id = data.get('signature_id')
+        signature_id = data.get('signature_id')
         source_ip = data.get('source_ip')
         destination_ip = data.get('destination_ip')
         source_port = data.get('source_port')
@@ -36,6 +36,18 @@ def alert_notify(request):
         timestamp = data.get('timestamp')
         tags = data.get('tags')
 
+        new_alert = models.Alert.objects.create(
+            signature_id=signature_id,
+            source_ip=source_ip,
+            destination_ip=destination_ip,
+            source_port=source_port,
+            destination_port=destination_port,
+            description=description,
+            timestamp=timestamp,
+            tags=tags
+        )
+
+        new_alert.save_base()
 
         channel_layer = get_channel_layer()
         # user_group_name = f"user_{alert_id}_group"
