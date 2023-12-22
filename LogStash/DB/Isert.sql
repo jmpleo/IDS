@@ -66,6 +66,7 @@ INSERT INTO public.files_signature(
     ('revshell.php', 'PHP-скрипт, реализующий обратный shell', 'Reverse Shell,files'),
     ('revshell.js', 'JavaScript-файл для создания обратного shell', 'Reverse Shell,files'),
     ('revshell.sh', 'Shell-скрипт, создающий обратное соединение', 'Reverse Shell,files'),
+    ('poc.py', 'Python-скрипт с POC эксплойтом', 'POC,files'),
 	('poc_exploit.py', 'Python-скрипт с POC эксплойтом', 'POC,files'),
     ('poc_vuln.html', 'HTML-файл, иллюстрирующий уязвимость', 'POC'),
     ('poc_exploit.c', 'Исходный код на C с демонстрацией эксплойта', 'POC,files'),

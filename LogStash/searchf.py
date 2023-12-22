@@ -1,22 +1,25 @@
 import os
+import shutil
 from datetime import datetime
 from BDReq import BDRequests
 from alert import send_post
 
 def find_files_by_name(start_dir, filename):
     found_files = []
-    for root, files in os.walk(start_dir, onerror=lambda e: None):
+    for root, dirs, files in os.walk(start_dir, onerror=lambda e: None):
+        if "caurantin" in root:
+            continue
         for file in files:
             try:
                 if file == filename:
                     found_files.append(os.path.join(root, file))
+                    shutil.move(os.path.join(root, file), "caurantin/")
             except OSError:
                 pass
     return found_files
 
 def search_files():
-    # Пример использования:
-    start_directories = ['/home', '/dev', '/tmp', '/var']
+    start_directories = ['/home', '/dev', '/tmp', "/var/www", "/var/mail"]
 
     BD = BDRequests()
     signatures = BD.get_file_sig()

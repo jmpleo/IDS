@@ -104,8 +104,24 @@ def check_directory_fuzz(data):
                 send_post(signature[0],log['source_host'],"","80",f"signature[2] : {formatted_date}", tags)
                 print(f"Сработала сигнатура: {signature[2]}, ip атакующего {log['source_host']}, время: {log['date_stamp']}")       
 
+def find_access():
+    start_dir = "/var/log"
+    filename = "access.log"
+    found_files = []
+    for root, dirs, files in os.walk(start_dir, onerror=lambda e: None):
+        for file in files:
+            try:
+                if file == filename:
+                    found_files.append(os.path.join(root, file))
+            except OSError:
+                pass
+    return found_files
+
 def main():
-    data = access_check("/var/log/nginx/access.log", True)
+    access_file = find_access()
+    if access_file:
+        for access in access_file:
+            data = access_check(access, True)
     check_by_signatures(data)
     check_directory_fuzz(data)
 
