@@ -30,19 +30,19 @@ def alert_notify(request):
         data = json.loads(request.body)
 
         new_alert = models.Alert.objects.create(
-            signature_id=    data.get('signature_id', 'undefined'),
-            source_ip=       data.get('source_ip', 'undefined'),
-            destination_ip=  data.get('destination_ip', 'undefined'),
-            source_port=     data.get('source_port', 'undefined'),
-            destination_port=data.get('destination_port', 'undefined'),
-            description=     data.get('description', 'undefined'),
+            signature_id=    data.get('signature_id', ''),
+            source_ip=       data.get('source_ip', ''),
+            destination_ip=  data.get('destination_ip', ''),
+            source_port=     data.get('source_port', ''),
+            destination_port=data.get('destination_port', ''),
+            description=     data.get('description', ''),
             datetime=timezone.now(),
             tags=data.get('tags', [])
         )
 
         data['datetime'] = str(new_alert.datetime)
-        data['source'] = "{}:{}".format(data['source_ip'], data['source_port'])
-        data['destination'] = "{}:{}".format(data['destination_ip'], data['destination_port'])
+        data['source'] = "{}:{}".format(new_alert.source_ip, new_alert.source_port)
+        data['destination'] = "{}:{}".format(new_alert.destination_ip, new_alert.destination_port)
 
         new_alert.save_base()
 
@@ -71,7 +71,6 @@ def index(request):
 
 @login_required(login_url="/login")
 def profile_view(request):
-    context = {'segment': 'profile'}
     msg = None
 
     if request.method == "POST":
@@ -90,6 +89,7 @@ def profile_view(request):
         request,
         "home/profile.html",
         {
+            "segment" : "profile",
             "form": form,
             "tags": dict(models.TAGS).keys(),
             "msg" : msg

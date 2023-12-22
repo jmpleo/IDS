@@ -57,13 +57,13 @@ POSTGRES_DB=ids
 #### Redis
 
 ```bash
-docker run -p 6379:6379 redis:5
+docker run -p 6379:6379 redis:5-alpine
 ```
 
 #### Postgres
 
 ```bash
-docker run -p 5432:5432 -e POSTGRES_USER=ids -e POSTGRES_PASSWORD=ids -e POSTGRES_DB=ids postgres:15
+docker run -p 5444:5432 -e POSTGRES_USER=ids -e POSTGRES_PASSWORD=ids -e POSTGRES_DB=ids postgres:15.5-alpine
 ```
 
  Установите зависимости и запустите сервер консоли
@@ -73,7 +73,7 @@ pipenv --python 3.9
 pipenv install -r requirements.txt
 pipenv run python3 manage.py makemigrations
 pipenv run python3 manage.py migrate
-pipenv run python3 manage.py runserver 0.0.0.0:85
+pipenv run python3 manage.py runserver 0.0.0.0:8000
 ```
 
 ## Dev API
