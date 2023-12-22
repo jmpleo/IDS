@@ -43,7 +43,7 @@ struct Rule
 };
 
 
-std::string filter = " not port 5432 and ip and not net 172.17.0.0/16";
+std::string filter = " not port 5432 and ip";
 #define PRINT_BYTES_PER_LINE 16
 
 // функция для вывода информации о всем трафике
@@ -91,6 +91,12 @@ static void print_data_hex(const uint8_t *data, int size)
 
 bool HaveProtocol(bool protocol[40], std::string proto)
 {
+
+    if (proto == "any")
+    {
+        return true;
+    }
+
     for (size_t i = 0; i < 40; i++)
     {
         if (protocol[i])
@@ -194,6 +200,7 @@ bool GoodPacket(Rule rule, Packet packet)
 
     if (ipSrcFromRule&&ipDstFromRule&&haveProtocol&&portSrcFromRule&&portDstFromRule)
     {
+       
        if (std::regex_search(packet.data, rule.reg))
         {
             return false;
@@ -295,14 +302,14 @@ static void handlePacket(uint8_t *user, const struct pcap_pkthdr *hdr, const uin
         data_size = hdr->len - sizeof(struct ethhdr) - ip_header_size - sizeof(struct udphdr);
     }
 
-  //  printf("\n%s:%d -> %s:%d, %d (0x%x) bytes\n\n",
-       //    source_ip, source_port, dest_ip, dest_port,
-   //        data_size, data_size);
+    printf("\n%s:%d -> %s:%d, %d (0x%x) bytes\n\n",
+           source_ip, source_port, dest_ip, dest_port,
+           data_size, data_size);
     int headers_size = 0;
     if (data_size > 0)
     {
         headers_size = hdr->len - data_size;
-      //  print_data_hex(bytes + headers_size, data_size);
+        print_data_hex(bytes + headers_size, data_size);
     }
 
     packet.dst_ip = dest_ip;
@@ -332,9 +339,9 @@ static void handlePacket(uint8_t *user, const struct pcap_pkthdr *hdr, const uin
     }
     dataForInfHex = ss.str();
     packet.dataHex = dataForInfHex;
+    std::string inf =  "user=postgres port=5432 password=postgres host="+IP_serv+" dbname=SOV";
+    PGconn *connPost = PQconnectdb(inf.c_str());
 
-    PGconn *connPost = PQconnectdb("user=postgres port=5432 password=postgres host=172.18.0.2 dbname=SOV");
-    
     if (PQstatus(connPost) != CONNECTION_OK)
     {
         std::cout << PQerrorMessage(connPost) << std::endl;
@@ -343,7 +350,7 @@ static void handlePacket(uint8_t *user, const struct pcap_pkthdr *hdr, const uin
         exit(1);
     }
 
-    std::string query = "SELECT * FROM rules;";
+    std::string query = "SELECT * FROM home_signature;";
     PGresult *res = PQexec(connPost, query.c_str());
 
     for (pcpp::Layer *curLayer = parsedPacket.getFirstLayer(); curLayer != NULL; curLayer = curLayer->getNextLayer())
@@ -362,19 +369,19 @@ static void handlePacket(uint8_t *user, const struct pcap_pkthdr *hdr, const uin
     {
         for (size_t i = 0; i < PQntuples(res); i++)
         {
-            rule.src_ip = PQgetvalue(res, i, 0);
-            rule.dst_ip = PQgetvalue(res, i, 1);
-            rule.src_port = PQgetvalue(res, i, 2);
-            rule.dst_port = PQgetvalue(res, i, 3);
-            rule.reg = PQgetvalue(res, i, 4);
-            rule.regHex = PQgetvalue(res, i, 5);
-            rule.protocol = PQgetvalue(res, i, 6);
+            rule.src_ip = PQgetvalue(res, i, 1);
+            rule.dst_ip = PQgetvalue(res, i, 2);
+            rule.src_port = PQgetvalue(res, i, 3);
+            rule.dst_port = PQgetvalue(res, i, 4);
+            rule.reg = PQgetvalue(res, i, 5);
+            rule.regHex = PQgetvalue(res, i, 6);
+            rule.protocol = PQgetvalue(res, i, 7);
 
             if (!GoodPacket(rule, packet))
             {
                 std::string desc="find regex ";
-                desc+=PQgetvalue(res, i, 4);
-                SendAlert(i,packet.src_ip,packet.dst_ip,packet.src_port,packet.dst_port,desc,PQgetvalue(res, i, 7));
+                desc+=PQgetvalue(res, i, 5);
+                SendAlert(i,packet.src_ip,packet.dst_ip,packet.src_port,packet.dst_port,desc,PQgetvalue(res, i, 8));
               //  std::cout << "BAD" << std::endl;
             }
         }
@@ -386,10 +393,14 @@ int main()
 {
     int res;
     char errbuf[PCAP_ERRBUF_SIZE];
-
-    std::ifstream fin("/opt/sniffer/ip.txt");
-    fin >> IP_serv;
+    std::string filter1;
+    std::ifstream fin("/opt/sniffer/filter.txt");
+    fin >> filter1;
     fin.close();
+
+    std::ifstream fin1("/opt/sniffer/ip.txt");
+    fin1 >> IP_serv;
+    fin1.close();
 
     pcap_t *pcap = pcap_open_live("any", 65535, 1, 100, errbuf);
     if (pcap == NULL)
@@ -400,8 +411,7 @@ int main()
 
     filter = filter + " and not net ";
     filter = filter + SERVER_ADRESS;
-    filter = filter + " and not net ";
-    filter = filter + IP_serv;
+    filter = filter + filter1;
     filter = filter + " and not port ";
     filter = filter + std::to_string(SERVER_PORT);
 
