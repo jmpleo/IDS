@@ -1,0 +1,22 @@
+<a href="/alerts" class="list-group-item m-1 list-group-item-action">
+  <div class="row align-items-center">
+    <div class="col ml--2">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h4 class="text">
+            <i class="ni ni-notification-70 text-danger"></i>
+            <span class="text-lg bg-secondary rounded p-1">
+                {{ notification.source_ip }}:{{ notification.source_port }}
+            </span>
+            <i class="ni ni-bold-right text-dark"></i>
+            <span class="text-lg bg-secondary rounded p-1">
+                {{ notification.destination_ip }}:{{ notification.destination_port }}
+            </span>
+          </h4>
+        </div>
+        <small> {{ notification.datetime }} </small>
+      </div>
+      <p class="text-sm mb-0"> {{ notification.description }} </p>
+    </div>
+  </div>
+</a>
