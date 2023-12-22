@@ -30,6 +30,8 @@ services:
     depends_on:
       - postgres
       - redis
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
   nginx:
     container_name: nginx
     restart: always
