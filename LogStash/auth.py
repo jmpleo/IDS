@@ -38,7 +38,7 @@ def check_count_log(filename, data):
             if filename in jsond:
                 last_count_log = jsond.get(filename,'')[1]
                 if last_count_log > now_count_log:
-                    send_post(description="Уменьшилось количество логов", tags=["local", "logs"])
+                    send_post(sig_id=506, description="Уменьшилось количество логов", tags=["local", "logs"])
                     print("Уменьшилось количество логов")
     except FileNotFoundError:
         return

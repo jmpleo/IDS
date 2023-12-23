@@ -1,3 +1,12 @@
+# Запуск модуля для сканирования логов каждые 5 минут
+```sh
+sudo crontab -u user -e
+```
+```nano
+*/5 * * * * cd /home/user/IDS/LogStash; python3 main.py
+```
+
+
 # Описание атак обнаруживаемых модулем
 
 ## В логах auth.log
@@ -30,3 +39,5 @@
 - Nmap
 - WhatWeb
 - Netsparker
+
+# Поиск потенциально опасных файлов
