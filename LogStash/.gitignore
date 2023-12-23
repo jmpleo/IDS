@@ -1,2 +1,4 @@
 checked.json
 __pycache__/
+!caurantin/README.md
+caurantin/*

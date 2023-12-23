@@ -122,8 +122,10 @@ def main():
     if access_file:
         for access in access_file:
             data = access_check(access, True)
-    check_by_signatures(data)
-    check_directory_fuzz(data)
+            check_by_signatures(data)
+            check_directory_fuzz(data)
+    
+    
 
 
 if __name__ == '__main__':
