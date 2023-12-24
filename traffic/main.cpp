@@ -10,11 +10,9 @@
 #include "net_headers.h"
 #include <postgresql/libpq-fe.h>
 #include "convert.h"
-#include <boost/asio/ip/address.hpp>
-#include <boost/asio/ip/network_v4.hpp>
 #include <curl/curl.h>
 
-std::string IP_serv;
+std::string dbConf;
 
 int count = 0;
 #define SERVER_ADRESS "127.0.0.1"
@@ -339,8 +337,9 @@ static void handlePacket(uint8_t *user, const struct pcap_pkthdr *hdr, const uin
     }
     dataForInfHex = ss.str();
     packet.dataHex = dataForInfHex;
-    std::string inf =  "user=postgres port=5432 password=postgres host="+IP_serv+" dbname=SOV";
-    PGconn *connPost = PQconnectdb(inf.c_str());
+    //std::string inf =  "user=postgres port=5432 password=postgres host=127.0.0.1 dbname=SOV";
+
+    PGconn *connPost = PQconnectdb(dbConf.c_str());
 
     if (PQstatus(connPost) != CONNECTION_OK)
     {
@@ -398,9 +397,10 @@ int main()
     fin >> filter1;
     fin.close();
 
-    std::ifstream fin1("/opt/sniffer/ip.txt");
-    fin1 >> IP_serv;
+    std::ifstream fin1("/opt/sniffer/confDB.txt");
+    getline(fin1, dbConf);
     fin1.close();
+
 
     pcap_t *pcap = pcap_open_live("any", 65535, 1, 100, errbuf);
     if (pcap == NULL)
