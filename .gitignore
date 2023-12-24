@@ -89,7 +89,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+# dist
 
 # Gatsby files
 .cache/
@@ -131,8 +131,32 @@ dist
 
 .history
 
+console/__pycache__/
+console/*.py[cod]
+#
+# tests and coverage
+console/*.pytest_cache
+console/.coverage
+
+console/*.db
+console/*.sqlite3
+console/*.log
+
+console/env
+console/venv
+
+console/.DS_Store
+
+console/package-lock.json
+
+console/apps/static/assets/node_modules
+console/apps/static/assets/yarn.lock
+console/apps/static/assets/.temp
+console/.jedi
+
+.vim
+
 checked.json
 __pycache__/
 !caurantin/README.md
 caurantin/*
-
