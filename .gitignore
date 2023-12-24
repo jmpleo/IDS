@@ -156,3 +156,7 @@ console/.jedi
 
 .vim
 
+checked.json
+__pycache__/
+!caurantin/README.md
+caurantin/*
