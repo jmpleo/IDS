@@ -11,6 +11,7 @@
 #include <postgresql/libpq-fe.h>
 #include "convert.h"
 #include <curl/curl.h>
+#include <netinet/tcp.h>
 
 std::string dbConf;
 
@@ -132,19 +133,19 @@ bool isInPortRange(int port,std::string range) {
     {
         return true;
     }
-    
+
 
     std::string delimiter = "-";
     std::string left = range.substr(0, range.find(delimiter));
     std::string right = range.substr(range.find(delimiter)+1);
-    int leftLim = std::stoi(left); 
-    int rightLim = std::stoi(right); 
+    int leftLim = std::stoi(left);
+    int rightLim = std::stoi(right);
 
     if (port>=leftLim&&port<=rightLim)
     {
         return true;
     }
-    
+
     return false;
 }
 
@@ -164,12 +165,12 @@ bool GoodPacket(Rule rule, Packet packet)
     else {
         std::string subnetSrc = rule.src_ip.substr(0, rule.src_ip.find(delimiter));
         std::string maskSrc = rule.src_ip.substr(rule.src_ip.find(delimiter)+1);
-        int maskLengthSrc = std::stoi(maskSrc); 
+        int maskLengthSrc = std::stoi(maskSrc);
         if (isInSubnet(packet.src_ip, subnetSrc, maskLengthSrc)) {
             ipSrcFromRule = true;
         }
     }
-    
+
     if (rule.dst_ip == "any" )
     {
          ipDstFromRule = true;
@@ -177,7 +178,7 @@ bool GoodPacket(Rule rule, Packet packet)
     else {
         std::string subnetDst = rule.dst_ip.substr(0, rule.dst_ip.find(delimiter));
         std::string maskDst = rule.dst_ip.substr(rule.dst_ip.find(delimiter)+1);
-        int maskLengthDst = std::stoi(maskDst); 
+        int maskLengthDst = std::stoi(maskDst);
         if (isInSubnet(packet.src_ip, subnetDst, maskLengthDst)) {
             ipDstFromRule = true;
         }
@@ -198,7 +199,7 @@ bool GoodPacket(Rule rule, Packet packet)
 
     if (ipSrcFromRule&&ipDstFromRule&&haveProtocol&&portSrcFromRule&&portDstFromRule)
     {
-       
+
        if (std::regex_search(packet.data, rule.reg))
         {
             return false;
@@ -209,7 +210,7 @@ bool GoodPacket(Rule rule, Packet packet)
             return false;
         }
     }
-    
+
     return true;
 }
 
