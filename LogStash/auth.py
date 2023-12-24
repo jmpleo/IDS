@@ -153,11 +153,12 @@ def sudoers_error(data):
 
 
 def main():
-    data = syslog_check('/var/log/auth.log', True)
-    check_ssh_brute_force(data)
-    check_ssh_user_brute(data)
-    many_su_errors(data)
-    sudoers_error(data)
+    if os.path.exists('/var/log/auth.log'):
+        data = syslog_check('/var/log/auth.log', True)
+        check_ssh_brute_force(data)
+        check_ssh_user_brute(data)
+        many_su_errors(data)
+        sudoers_error(data)
 
 if __name__ == '__main__':
     main()

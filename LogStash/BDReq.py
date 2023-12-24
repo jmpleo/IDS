@@ -1,8 +1,9 @@
 import psycopg2
+import os
 
 class BDRequests():
     def __init__(self):
-        self.conn = psycopg2.connect(database="SOV", user="postgres", password="1234", host="localhost", port="5432")
+        self.conn = psycopg2.connect(database=os.getenv("DATABASE_NAME"), user=os.getenv("DATABASE_USER"), password=os.getenv("DATABASE_PASSWORD"), host=os.getenv("DATABASE_HOSTNAME"), port=os.getenv("DATABASE_PORT"))
 
     def __del__(self):
         self.conn.close()

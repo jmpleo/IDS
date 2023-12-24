@@ -130,3 +130,9 @@ dist
 .pnp.*
 
 .history
+
+checked.json
+__pycache__/
+!caurantin/README.md
+caurantin/*
+
