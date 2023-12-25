@@ -8,16 +8,33 @@ services:
       - ./db/.env
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - logdata:/var/log
     networks:
       - db_network
     ports:
       - "5444:5432"
+
   redis:
     container_name: redis_ids
     image: "redis:5-alpine"
     restart: always
     networks:
       - db_network
+
+  logstash:
+    container_name: logstash_ids
+    restart: always
+    env_file:
+      - ./LogStash/.env
+    build: ./LogStash/
+    networks:
+      - db_network
+    depends_on:
+      - postgres
+      - console
+    volumes:
+      #- logdata:/var/log
+
   console:
     container_name: console_ids
     restart: always
@@ -32,14 +49,18 @@ services:
       - redis
     volumes:
       - /etc/localtime:/etc/localtime:ro
+        #- logdata:/var/log
+
   nginx:
-    container_name: nginx
+    container_name: nginx_ids
     restart: always
     image: "nginx:latest"
+    #build: ./nginx
     ports:
       - "85:85"
     volumes:
       - ./nginx:/etc/nginx/conf.d
+        #- logdata:/var/log
     networks:
       - web_network
     depends_on:
@@ -53,3 +74,4 @@ networks:
 
 volumes:
   pgdata:
+  logdata:

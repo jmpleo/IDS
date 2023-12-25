@@ -9,7 +9,7 @@ def send_post(sig_id="", src_ip="", src_port=0, dst_port=0, description="", tags
     if dst_port == "":
         dst_port = 0
     requests.post(
-        url='http://127.0.0.1:85/alerts/notify',
+        url=os.getenv("NOTIFY_URL"), #'http://127.0.0.1:85/alerts/notify',
         headers={
             "Content-Type" : "application/json"
         },
