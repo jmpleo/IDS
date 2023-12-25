@@ -1,11 +1,11 @@
 version: '3.8'
 services:
   postgres:
-    container_name: postgres
-    image: "postgres:15.5-alpine"
+    container_name: postgres_ids
     restart: always
+    build: ./db/
     env_file:
-      - .env
+      - ./db/.env
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -13,17 +13,17 @@ services:
     ports:
       - "5444:5432"
   redis:
-    container_name: redis
+    container_name: redis_ids
     image: "redis:5-alpine"
     restart: always
     networks:
       - db_network
   console:
-    container_name: console
+    container_name: console_ids
     restart: always
     env_file:
-      - .env
-    build: .
+      - ./console/.env
+    build: ./console/
     networks:
       - db_network
       - web_network
