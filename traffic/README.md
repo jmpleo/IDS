@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Build
 
 Для сброки необходимы библиотеки `pq`, `pcap`, `curl`, `pcap++`.
@@ -33,7 +34,7 @@ sudo dpkg -i sniffer.deb
 
 ## Файлы конфигурации
 
-- `/opt/sniffer/filter.txt`. Файд конфигурации фильтров BPF.  
+- `/opt/sniffer/filter.txt`. Файд конфигурации фильтров BPF.
 
   ```
    not port 5432 and ip
@@ -45,4 +46,4 @@ sudo dpkg -i sniffer.deb
   user=ids port=5444 password=ids host=localhost dbname=ids
   ```
 
-  
+

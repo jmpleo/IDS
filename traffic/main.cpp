@@ -301,14 +301,14 @@ static void handlePacket(uint8_t *user, const struct pcap_pkthdr *hdr, const uin
         data_size = hdr->len - sizeof(struct ethhdr) - ip_header_size - sizeof(struct udphdr);
     }
 
-    printf("\n%s:%d -> %s:%d, %d (0x%x) bytes\n\n",
-           source_ip, source_port, dest_ip, dest_port,
-           data_size, data_size);
+  //  printf("\n%s:%d -> %s:%d, %d (0x%x) bytes\n\n",
+   //        source_ip, source_port, dest_ip, dest_port,
+   //        data_size, data_size);
     int headers_size = 0;
     if (data_size > 0)
     {
         headers_size = hdr->len - data_size;
-        print_data_hex(bytes + headers_size, data_size);
+      //  print_data_hex(bytes + headers_size, data_size);
     }
 
     packet.dst_ip = dest_ip;
@@ -395,7 +395,7 @@ int main()
     char errbuf[PCAP_ERRBUF_SIZE];
     std::string filter1;
     std::ifstream fin("/opt/sniffer/filter.txt");
-    fin >> filter1;
+     getline(fin, filter1);
     fin.close();
 
     std::ifstream fin1("/opt/sniffer/confDB.txt");
