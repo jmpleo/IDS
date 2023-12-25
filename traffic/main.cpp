@@ -16,7 +16,7 @@
 std::string dbConf;
 
 int count = 0;
-#define SERVER_ADRESS "127.0.0.1"
+#define SERVER_ADRESS "127.0.0.1 "
 #define SERVER_PORT 3425
 
 struct Packet
