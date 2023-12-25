@@ -66,7 +66,7 @@ def index(request):
     context = {'segment': 'index'}
 
     alert_count = count = models.Alert.objects.count()
-    signature_count = count = models.Alert.objects.count()
+    signature_count = count = models.Signature.objects.count()
 
     return render(
         request,
