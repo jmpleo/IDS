@@ -32,6 +32,7 @@ services:
     depends_on:
       - postgres
       - console
+
     volumes:
       - /home:/home
       - /dev/:/dev
@@ -39,6 +40,7 @@ services:
       - /tmp/:/tmp
       - /var/www:var/www
       - /var/mail:var/mail
+      
   console:
     container_name: console_ids
     restart: always
