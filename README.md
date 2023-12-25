@@ -69,9 +69,13 @@
 
 
 
-### Docker-compose
+### Быстрый запуск
 
-Теперь запустите/соберите все модули используя `docker-compose`:
+
+
+#### Dockered module
+
+Теперь запустите/соберите модули `console+redis`, `logstash`, `db` используя `docker-compose`:
 
 ```bash
 docker-compose up -d
@@ -79,3 +83,26 @@ docker-compose up -d
 
 
 
+#### Сниффер
+
+Осталось установить и заупустить сниффер
+
+```bash
+cd traffic
+sudo dpkg -i snffer.deb
+sudo sniffer
+```
+
+Настройки сниффера:
+
+- `/opt/sniffer/filter.txt`. Файд конфигурации фильтров BPF.
+
+  ```
+   not port 5432 and ip
+  ```
+
+- `/opt/sniffer/confDB.txt` - Файл конфигурации базы данных. Например:
+
+  ```
+  user=ids port=5444 password=ids host=localhost dbname=ids
+  ```
