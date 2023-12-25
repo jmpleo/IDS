@@ -8,6 +8,7 @@ ENV PYTHONUNBUFFERED 1
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-RUN chmod +x /entrypoint.sh
+#RUN chmod +x /entrypoint.sh
+#ENTRYPOINT ["/entrypoint.sh"]
 
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["python", "/main.py"]
