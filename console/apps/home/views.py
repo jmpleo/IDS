@@ -65,9 +65,18 @@ def alert_notify(request):
 def index(request):
     context = {'segment': 'index'}
 
-    html_template = loader.get_template('home/index.html')
-    return HttpResponse(html_template.render(context, request))
+    alert_count = count = models.Alert.objects.count()
+    signature_count = count = models.Alert.objects.count()
 
+    return render(
+        request,
+        "home/index.html",
+        {
+            "segment" : "index",
+            "total_alerts" : alert_count,
+            "total_signatures" : signature_count
+        }
+    )
 
 @login_required(login_url="/login")
 def profile_view(request):
