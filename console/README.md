@@ -1,36 +1,6 @@
 
 
-## Quick start
-
-Измените файл `.env` касательно ваших настроек
-
-```bash
-# appseed-app
-REDIS_HOSTNAME=redis
-REDIS_PORT=6379
-DEBUG=True
-SECRET_KEY=S3cr3t_K#Key
-DATABASE_HOSTNAME=postgres
-DATABASE_PORT=5432
-DATABASE_NAME=ids
-DATABASE_USER=ids
-DATABASE_PASSWORD=ids
-
-# postgres
-POSTGRES_USER=ids
-POSTGRES_PASSWORD=ids
-POSTGRES_DB=ids
-```
-
-### Docker
-
-Соберите сервисы и запустите их используя `docker-compose`:
-
-```bash
-docker-compose up
-```
-
-### Host
+### Development
 
 Предварительно необходимо запустить локальные сервисы `postgres` и `redis` и изменить для них переменное окружение `.env`
 
@@ -43,15 +13,10 @@ REDIS_PORT=6379
 DEBUG=True
 SECRET_KEY=S3cr3t_K#Key
 DATABASE_HOSTNAME=localhost
-DATABASE_PORT=5432
+DATABASE_PORT=5444
 DATABASE_NAME=ids
 DATABASE_USER=ids
 DATABASE_PASSWORD=ids
-
-# postgres
-POSTGRES_USER=ids
-POSTGRES_PASSWORD=ids
-POSTGRES_DB=ids
 ```
 
 #### Redis
@@ -76,7 +41,7 @@ pipenv run python3 manage.py migrate
 pipenv run python3 manage.py runserver 0.0.0.0:8000
 ```
 
-## Dev API
+## Development API
 
 Для оповещения консоли о сработанной сигнатуре, необходимо отправить `POST` запрос.
 Если отсутствует какое-то поле, то отправлять следует остальную часть, никак не
@@ -127,7 +92,7 @@ pipenv run python3 manage.py runserver 0.0.0.0:8000
 
    ```python
    import requests
-
+   
    requests.post(
        url='http://<console>/alerts/notify',
        headers={
@@ -149,21 +114,21 @@ pipenv run python3 manage.py runserver 0.0.0.0:8000
    ```c++
    #include <iostream>
    #include <curl/curl.h>
-
+   
    int main() {
        CURL *curl;
        CURLcode res;
-
+   
        curl_global_init(CURL_GLOBAL_DEFAULT);
-
+   
        curl = curl_easy_init();
        if (curl) {
            curl_easy_setopt(curl, CURLOPT_URL, "http://<console>/alerts/notify");
-
+   
            struct curl_slist *headers = NULL;
            headers = curl_slist_append(headers, "Content-Type: application/json");
            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-
+   
            const char *data = R"({
                "signature_id": "1",
                "source_ip": "81.16.0.1",
@@ -174,26 +139,21 @@ pipenv run python3 manage.py runserver 0.0.0.0:8000
                "tags": ["bruteforce", "http"]
            })";
            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
-
+   
            res = curl_easy_perform(curl);
            if (res != CURLE_OK) {
                std::cerr << "Ошибка при выполнении запроса: " << curl_easy_strerror(res) << std::endl;
            }
-
+   
            curl_easy_cleanup(curl);
            curl_slist_free_all(headers);
        }
-
+   
        curl_global_cleanup();
-
+   
        return 0;
    }
    ```
 
 
-
-
-### GET
-
-coming soon...
 
