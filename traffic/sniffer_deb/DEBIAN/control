@@ -1,0 +1,10 @@
+Package: sniffer
+Version: 1.0
+Section: unknown
+Priority: optional
+Depends: libc6, libpcap0.8, libpq5, libcurl4,libstdc++6,libgcc-s1
+Architecture: amd64
+Essential: no
+Installed-Size: 1824
+Maintainer: Bear <unknown>
+Description: easy traffic controller
