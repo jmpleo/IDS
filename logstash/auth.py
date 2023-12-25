@@ -1,4 +1,4 @@
-import logdissect 
+import logdissect
 import re
 import json
 import os
@@ -27,9 +27,9 @@ def filter_log(filename, data):
     val = f"{last_checked_log_time}-{now_time}"
     filter = logdissect.filters.range.FilterModule()
     data = filter.filter_data(data, value=val)
-    
+
     return data
-    
+
 def check_count_log(filename, data):
     now_count_log = len(data['entries'])
     try:
@@ -56,11 +56,11 @@ def syslog_check(filename, filter_flag = True):
     #Фильтрация
     if filter_flag:
         data = filter_log(filename,data)
-    
+
     #Изменение значения последних провереных логов
     if len(data['entries']) != 0:
         last_checked_log_time = str(int(data['entries'][len(data['entries']) - 1]['numeric_date_stamp']) + 1)
-        
+
         #Запись значений в JSON
         try:
             with open('checked.json', 'r') as file:
@@ -77,15 +77,15 @@ def check_ssh_brute_force(data):
     #Разбиваем логи по ip адресу атакующего
     bad_src = defaultdict(lambda: [0, None])
     for log in data['entries']:
-        if "Failed password for" in log['raw_text'] and "ssh" in log['raw_text'] and "invalid" not in log['raw_text']: 
+        if "Failed password for" in log['raw_text'] and "ssh" in log['raw_text'] and "invalid" not in log['raw_text']:
             ip_src = re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", log['message'])[0]
-        
+
             #Подсчет количества для конкретного ip
             if ip_src in bad_src:
-                bad_src[ip_src][0] += 1  
+                bad_src[ip_src][0] += 1
             else:
                 formatted_date = form_data(log['numeric_date_stamp'])
-                bad_src[ip_src] = [1, formatted_date] 
+                bad_src[ip_src] = [1, formatted_date]
 
     #Проверяем количество строк удовлетворяющих критерию атаки
     for ip in bad_src:
@@ -98,15 +98,15 @@ def check_ssh_user_brute(data):
     #Разбиваем логи по ip адресу атакующего
     bad_src = defaultdict(lambda: [0, None])
     for log in data['entries']:
-        if "Failed password for invalid" in log['raw_text'] and "ssh" in log['raw_text']: 
+        if "Failed password for invalid" in log['raw_text'] and "ssh" in log['raw_text']:
             ip_src = re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", log['message'])[0]
-            
+
             #Подсчет количества для конкретного ip
             if ip_src in bad_src:
-                bad_src[ip_src][0] += 1  
+                bad_src[ip_src][0] += 1
             else:
                 formatted_date = form_data(log['numeric_date_stamp'])
-                bad_src[ip_src] = [1, formatted_date] 
+                bad_src[ip_src] = [1, formatted_date]
 
     #Проверяем количество строк удовлетворяющих критерию атаки
     for ip in bad_src:
@@ -125,10 +125,10 @@ def many_su_errors(data):
                 ruser = matches.group(1)
                 user = matches.group(2)
                 constr_ruser_user = f"{ruser}:{user}"
-                
+
                 #Подсчет количества для конктретного пользователя
                 if constr_ruser_user in bad_logs:
-                    bad_logs[constr_ruser_user][0] += 1 
+                    bad_logs[constr_ruser_user][0] += 1
                 else:
                     formatted_date = form_data(log['numeric_date_stamp'])
                     bad_logs[constr_ruser_user] = [1, formatted_date]

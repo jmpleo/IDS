@@ -22,4 +22,5 @@ websocket_urlpatterns = [
     path("", consumers.Consumer.as_asgi()),
     path("alerts", consumers.Consumer.as_asgi()),
     path("profile", consumers.Consumer.as_asgi()),
+    path("index", consumers.Consumer.as_asgi()),
 ]

@@ -1,5 +1,6 @@
 import requests
 import socket
+import os
 
 def send_post(sig_id="", src_ip="", src_port=0, dst_port=0, description="", tags=[]):
     hostname = socket.gethostname()
@@ -8,7 +9,7 @@ def send_post(sig_id="", src_ip="", src_port=0, dst_port=0, description="", tags
         src_port = 0
     if dst_port == "":
         dst_port = 0
-    requests.post(
+    response = requests.post(
         url=os.getenv("NOTIFY_URL"), #'http://127.0.0.1:85/alerts/notify',
         headers={
             "Content-Type" : "application/json"
@@ -24,3 +25,5 @@ def send_post(sig_id="", src_ip="", src_port=0, dst_port=0, description="", tags
 
         }
     )
+    if response.status_code != 200:
+        print(f"Send notify err: {response.status_code}")

@@ -25,10 +25,11 @@ services:
     container_name: logstash_ids
     restart: always
     env_file:
-      - ./LogStash/.env
-    build: ./LogStash/
+      - ./logstash/.env
+    build: ./logstash/
     networks:
       - db_network
+      - web_network
     depends_on:
       - postgres
       - console

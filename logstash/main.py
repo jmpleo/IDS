@@ -10,6 +10,7 @@ def main():
 
 if __name__ == "__main__":
     while True:
+        n = access.BDRequests()
         print("log scaning...")
         main()
         print("log checked...")
