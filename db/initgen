@@ -1,0 +1,25 @@
+#!/bin/sh
+
+cd sql/
+
+# WARNING! it is important to follow the script sequence
+sql="\
+entity \
+insert \
+"
+
+echo "-- init.sql --" > ../init.sql
+
+for unit in $sql; do
+    if [ -d $unit ]; then
+        for file in $unit/*; do
+            if [ -f "$file" ]; then
+                cat "$file" >> ../init.sql && echo "add... $file"
+            fi
+        done
+    elif [ -f $unit ]; then
+        cat "$unit" >> ../init.sql && echo "add... $unit"
+    fi
+done
+
+echo "done!"
