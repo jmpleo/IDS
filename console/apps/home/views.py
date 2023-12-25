@@ -99,11 +99,17 @@ def profile_view(request):
 
 @login_required(login_url="/login")
 def alert_view(request):
-    context = {'segment': 'alerts'}
 
     data = models.Alert.objects.all()
 
-    return render(request, "home/alerts.html", {"notifications": data[::-1]})
+    return render(
+        request,
+        "home/alerts.html",
+        {
+            'segment': 'alerts',
+            "notifications": data[::-1]
+        }
+    )
 
 
 @login_required(login_url="/login")

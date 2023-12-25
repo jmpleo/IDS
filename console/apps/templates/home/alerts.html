@@ -5,34 +5,90 @@
 {% block content %}
 
     <!-- Header -->
-    <div class="header pb-6">
+    <div class="header pb">
+    <span class="mask bg-gradient-danger opacity-8"></span>
+    <span class="mask bg-gradient-dark opacity-5"></span>
       <div class="container-fluid">
         <div class="header-body">
           <div class="row align-items-center py-4">
-            <div class="col-lg-6 col-7">
-              <h6 class="h2 text-Dark d-inline-block mb-0">Оповещения</h6>
-              <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <!--div class="col-lg-6 col-7">
+              <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
                 <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                   <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
-                  <li class="breadcrumb-item active" aria-current="page"><a href="#">Alerts</a></li>
-                  <!--li class="breadcrumb-item">Alerts</li-->
+                  <li class="breadcrumb-item active" aria-current="page"><a href="#">Оповещения</a></li>
                 </ol>
               </nav>
+            </div-->
+            <div class="col-lg-6 col-6">
+            <!-- Button trigger modal -->
+                <button type="button" class="btn btm-sm p-1 btn-secondary " data-toggle="modal" data-target="#modalCodCopy">
+                    New
+                </button>
+            <!-- Modal -->
+                <div class="modal" id="modalCodCopy" tabindex="-1" aria-labelledby="modalCodCopyLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modelCodeCopy">Пример oповещения</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body p-2 m-3 rounded border bg-secondary">
+                                <code id="code">
+                                <pre>curl -X POST \
+     -H "Content-Type: application/json" \
+     -d'{
+    "signature_id": "1",
+    "source_ip": "81.16.0.1",
+    "destination_ip": "10.0.0.1",
+    "source_port": 1234,
+    "destination_port": 5678,
+    "description": "Example alert",
+    "tags": ["bruteforce", "http"]
+}' http://localhost:85/alerts/notify</pre>
+                                </code>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                </div>
             </div>
-            <div class="col-lg-6 col-5 text-right">
-              <a href="#" class="btn btn-sm btn-neutral">New</a>
-              <a href="#" class="btn btn-sm btn-neutral">Filters</a>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
     <!-- Page content -->
-    <div class="container-fluid mt--6">
+    <div class="container-fluid mt-3">
       <div class="row">
         <div class="col">
           <div class="card border-0">
             <div id="map-default" class="map-canvas" data-lat="40.748817" data-lng="-73.985428">
+                <div class="list-group list-group-flush mx-2" >
+                  <div class="list-group-item m-1 list-group-item">
+                    <div class="row align-items-center">
+                      <div class="col ml--2">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <h4 class="text">
+                              <i class="ni ni-align-left-2 text-dark"></i>
+                              <span class="text-lg bg-secondary rounded p-1">
+                                  Source
+                              </span>
+                              <i class="ni ni-bold-right text-dark"></i>
+                              <span class="text-lg bg-secondary rounded p-1">
+                                  Destination
+                              </span>
+                            </h4>
+                          </div>
+                          <small> Datetime </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="list-group list-group-flush m-2" id="notifications-list">
                 {% for notification in notifications %}
                     {% include 'includes/notification.html' %}
