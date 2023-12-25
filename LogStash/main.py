@@ -13,4 +13,4 @@ if __name__ == "__main__":
         print("log scaning...")
         main()
         print("log checked...")
-        time.sleep(10)
+        time.sleep(60)
